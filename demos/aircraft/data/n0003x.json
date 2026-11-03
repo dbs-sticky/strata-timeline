@@ -1,0 +1,15 @@
+{
+  "aircraft": { "registration": "N0003X", "msn": "326", "type": "A350-1041 (fictional)" },
+  "history": [
+    { "type": "order", "date": "2016-09", "customer": "Example Air" },
+    { "type": "delivery", "date": "2019-07-27", "to_operator": "Example Air", "note": "First flight 2 Jul 2019." },
+    { "type": "registration", "from": "2019-07-25", "to": null, "registration": "N0003X", "country": "United States" },
+    { "type": "operator", "from": "2019-07-27", "to": null, "operator": "Example Air", "base": "LHR" },
+    { "type": "lease", "from": "2019-07-27", "to": "2031-07", "lessor": "Demo Aircraft Leasing", "lessee": "Example Air" },
+    { "type": "storage", "from": "2020-04-02", "to": "2020-09-15", "location": "LHR" },
+    { "type": "maintenance", "from": "2021-03-09", "to": "2021-03-11", "check": "A-check", "location": "LHR" },
+    { "type": "maintenance", "from": "2023-10-02", "to": "2023-10-23", "check": "C-check", "location": "CWL", "provider": "Demo MRO" },
+    { "type": "occurrence", "date": "2024-02-12", "summary": "Rejected take-off", "location": "LHR", "severity": "Incident" },
+    { "type": "maintenance", "from": "2026-10-18", "to": "2026-10-21", "check": "Line check", "location": "CWL", "confidence": "medium" }
+  ]
+}

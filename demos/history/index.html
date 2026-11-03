@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>History - Strata</title>
+  <link rel="stylesheet" href="../demo.css">
+  <link rel="stylesheet" href="../../src/strata.css">
+</head>
+<body>
+  <header>
+    <h1>The space race</h1>
+    <p>Three linked bands, as in the original: detail, a coarser band that follows the centre, and a whole-span overview with a window. Apollo 11 sits in a hot zone (x40). Imprecise dates (month precision) fade in. <a href="../">All demos</a></p>
+  </header>
+  <main>
+    <nav class="picker" aria-label="Highlight">
+      <button type="button" id="hl" aria-pressed="false">Highlight Apollo and Soyuz</button>
+      <button type="button" id="jump">Zoom to Apollo 8 to 11</button>
+    </nav>
+    <strata-timeline src="./data.json"></strata-timeline>
+  </main>
+  <script type="module">
+    import '../../src/index.js';
+    const tl = document.querySelector('strata-timeline');
+    tl.bands = [
+      { id: 'detail' },
+      { id: 'months', ratio: 1 / 10, height: 74 },
+      { id: 'overview', ratio: 'fit', height: 64 },
+    ];
+    const hl = document.getElementById('hl');
+    hl.addEventListener('click', () => {
+      const on = hl.getAttribute('aria-pressed') !== 'true';
+      hl.setAttribute('aria-pressed', String(on));
+      tl.highlight(on ? ['apollo', 'soyuz'] : []);
+    });
+    document.getElementById('jump').addEventListener('click', () => tl.zoomTo({ start: '1968-12', end: '1969-08' }));
+    window.tl = tl;
+  </script>
+</body>
+</html>

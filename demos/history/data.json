@@ -1,0 +1,47 @@
+{
+  "title": "The space race, 1957-1979",
+  "lanes": [
+    { "id": "ussr", "label": "USSR" },
+    { "id": "usa", "label": "USA" },
+    { "id": "programs", "label": "Programs" }
+  ],
+  "categories": {
+    "first": { "label": "Firsts", "color": "light-dark(#1f6fb2, #6aaee6)" },
+    "crewed": { "label": "Crewed missions", "color": "light-dark(#1b7f5c, #52c79d)" },
+    "setback": { "label": "Setbacks", "color": "light-dark(#b3261e, #f2807a)" },
+    "program": { "label": "Programs", "color": "light-dark(#6b4fbb, #a995e6)" }
+  },
+  "events": [
+    { "title": "Sputnik 1", "start": "1957-10-04", "lane": "ussr", "category": "first", "description": "First artificial satellite." },
+    { "title": "Sputnik 2 (Laika)", "start": "1957-11-03", "lane": "ussr", "category": "first", "description": "First animal in orbit." },
+    { "title": "Explorer 1", "start": "1958-01-31", "lane": "usa", "category": "first", "description": "First US satellite; discovered the Van Allen belts." },
+    { "title": "NASA founded", "start": "1958-07-29", "lane": "usa", "category": "program" },
+    { "title": "Luna 2 impact", "start": "1959-09-13", "lane": "ussr", "category": "first", "description": "First human-made object to reach the Moon." },
+    { "title": "Vostok 1", "start": "1961-04-12", "lane": "ussr", "category": "first", "description": "Yuri Gagarin, first human in space." },
+    { "title": "Freedom 7", "start": "1961-05-05", "lane": "usa", "category": "first", "description": "Alan Shepard, first American in space." },
+    { "title": "Friendship 7", "start": "1962-02-20", "lane": "usa", "category": "first", "description": "John Glenn, first American to orbit Earth." },
+    { "title": "Vostok 6", "start": "1963-06-16", "end": "1963-06-19", "lane": "ussr", "category": "crewed", "description": "Valentina Tereshkova, first woman in space." },
+    { "title": "Voskhod 2", "start": "1965-03-18", "end": "1965-03-19", "lane": "ussr", "category": "crewed", "description": "Alexei Leonov made the first spacewalk." },
+    { "title": "Gemini 4", "start": "1965-06-03", "end": "1965-06-07", "lane": "usa", "category": "crewed", "description": "Ed White, first American spacewalk." },
+    { "title": "Apollo 1 fire", "start": "1967-01-27", "lane": "usa", "category": "setback", "description": "Three astronauts died in a launch-pad test." },
+    { "title": "Soyuz 1", "start": "1967-04-23", "end": "1967-04-24", "lane": "ussr", "category": "setback", "description": "Vladimir Komarov died when the parachute failed." },
+    { "title": "Apollo 8", "start": "1968-12-21", "end": "1968-12-27", "lane": "usa", "category": "crewed", "description": "First crewed flight around the Moon." },
+    { "title": "Apollo 11", "start": "1969-07-16", "end": "1969-07-24", "lane": "usa", "category": "crewed", "description": "First crewed landing on the Moon, 20 July 1969." },
+    { "title": "Apollo 13", "start": "1970-04-11", "end": "1970-04-17", "lane": "usa", "category": "setback", "description": "Oxygen tank failure; crew returned safely." },
+    { "title": "Salyut 1", "start": "1971-04-19", "lane": "ussr", "category": "first", "description": "First space station." },
+    { "title": "Apollo 17", "start": "1972-12-07", "end": "1972-12-19", "lane": "usa", "category": "crewed", "description": "Last crewed Moon landing so far." },
+    { "title": "Skylab", "start": "1973-05-14", "end": "1979-07-11", "lane": "usa", "category": "program", "description": "US space station, in orbit until it re-entered." },
+    { "title": "Apollo-Soyuz", "start": "1975-07-15", "end": "1975-07-24", "lane": "usa", "category": "crewed", "description": "First joint US-Soviet crewed mission." },
+    { "title": "Vostok", "start": "1961-04-12", "end": "1963-06-19", "lane": "programs", "category": "program" },
+    { "title": "Mercury", "start": "1958-10", "end": "1963-05-16", "lane": "programs", "category": "program" },
+    { "title": "Gemini", "start": "1961-12", "end": "1966-11-15", "lane": "programs", "category": "program" },
+    { "title": "Apollo", "start": "1961-05", "end": "1972-12-19", "lane": "programs", "category": "program" }
+  ],
+  "decorators": [
+    { "type": "span", "start": "1969-07-20", "end": "1972-12-14", "label": "Moon landings" },
+    { "type": "point", "date": "1969-07-20", "label": "Tranquility Base" }
+  ],
+  "hotZones": [
+    { "start": "1969-07-16", "end": "1969-07-24", "magnify": 40, "label": "Apollo 11" }
+  ]
+}

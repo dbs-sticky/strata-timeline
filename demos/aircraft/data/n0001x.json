@@ -1,0 +1,21 @@
+{
+  "aircraft": { "registration": "N0001X", "msn": "4521", "type": "A320-232 (fictional)" },
+  "history": [
+    { "type": "order", "date": "2009-03", "customer": "Example Air", "note": "Firm order for 24 aircraft." },
+    { "type": "delivery", "date": "2012-05-04", "to_operator": "Example Air", "note": "Delivered from Toulouse." },
+    { "type": "lease", "from": "2012-05-04", "to": "2020-04-01", "lessor": "Demo Aircraft Leasing", "lessee": "Example Air" },
+    { "type": "registration", "from": "2012-05-04", "to": "2021-06-14", "registration": "N0001X", "country": "United States" },
+    { "type": "operator", "from": "2012-05-04", "to": "2020-04-01", "operator": "Example Air", "base": "JFK" },
+    { "type": "maintenance", "from": "2016-02-08", "to": "2016-03-02", "check": "C-check", "location": "TLS", "provider": "Demo MRO" },
+    { "type": "occurrence", "date": "2017-09-03", "summary": "Engine shutdown in flight", "location": "Over the Atlantic", "severity": "Serious incident", "source": "https://example.com/reports/2017-09-03" },
+    { "type": "modification", "from": "2018-10-01", "to": "2018-10-21", "title": "Cabin retrofit", "location": "TLS" },
+    { "type": "occurrence", "date": "2019-08-09", "summary": "Medical diversion", "location": "KEF", "severity": "Diversion" },
+    { "type": "storage", "from": "2020-04-01", "to": "2021-06-10", "location": "Teruel", "note": "Parked during the traffic collapse." },
+    { "type": "lease", "from": "2021-06-14", "to": null, "lessor": "Demo Aircraft Leasing", "lessee": "Sample Wings" },
+    { "type": "registration", "from": "2021-06-15", "to": null, "registration": "D-ASMP", "country": "Germany" },
+    { "type": "operator", "from": "2021-06-15", "to": null, "operator": "Sample Wings", "base": "MUC" },
+    { "type": "occurrence", "date": "2023-01-14", "summary": "Bird strike", "location": "MUC", "severity": "Minor" },
+    { "type": "maintenance", "from": "2024-02-05", "to": "2024-02-26", "check": "C-check", "location": "CWL", "provider": "Demo MRO" },
+    { "type": "maintenance", "from": "2025-09-15", "to": "2025-09-17", "check": "A-check", "location": "MUC", "confidence": "low" }
+  ]
+}

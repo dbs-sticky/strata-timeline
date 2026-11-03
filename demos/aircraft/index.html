@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Aircraft lifecycle - Strata</title>
+  <link rel="stylesheet" href="../demo.css">
+  <link rel="stylesheet" href="../../src/strata.css">
+</head>
+<body>
+  <header>
+    <h1>Aircraft lifecycle</h1>
+    <p>One airframe, five lanes: ownership, registration, operator, ground time and occurrences. Short maintenance checks sit in hot zones, so a three-week check is readable inside a twelve-year life. Sample data is fictional and in an "internal API" shape, mapped by <code>adapters/aircraft.js</code>. <a href="../">All demos</a></p>
+  </header>
+  <main>
+    <nav class="picker" aria-label="Aircraft">
+      <button type="button" data-tail="n0001x" aria-pressed="true">N0001X A320</button>
+      <button type="button" data-tail="n0002x" aria-pressed="false">N0002X 777-300ER</button>
+      <button type="button" data-tail="n0003x" aria-pressed="false">N0003X A350-1000</button>
+    </nav>
+    <strata-timeline wheel="scroll"></strata-timeline>
+  </main>
+  <script type="module">
+    import '../../src/index.js';
+    import { fromAircraft } from '../../src/adapters/aircraft.js';
+
+    const tl = document.querySelector('strata-timeline');
+    const picker = document.querySelector('nav.picker');
+
+    async function show(tail) {
+      for (const b of picker.children) b.setAttribute('aria-pressed', String(b.dataset.tail === tail));
+      await tl.load(`./data/${tail}.json`, { adapter: (api) => fromAircraft(api) });
+      history.replaceState(null, '', `#${tail}`);
+    }
+
+    picker.addEventListener('click', (e) => {
+      const b = e.target.closest('button');
+      if (b) show(b.dataset.tail);
+    });
+    show(location.hash.slice(1) || 'n0001x');
+    window.tl = tl;
+  </script>
+</body>
+</html>

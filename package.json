@@ -1,0 +1,12 @@
+{
+  "name": "strata-timeline",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "A modern, dependency-free successor to the SIMILE Timeline widget: linked bands, hot zones, native scrolling, popovers and anchor positioning.",
+  "license": "MIT",
+  "scripts": {
+    "dev": "node scripts/serve.js",
+    "test": "node --test"
+  }
+}

@@ -1,0 +1,13 @@
+:root { color-scheme: light dark; --page: light-dark(#f2f3f0, #0e1013); --ink: light-dark(#1b1f24, #e6e8eb); --muted: light-dark(#5b6570, #98a1ab); }
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100dvh; display: grid; grid-template-rows: auto minmax(0, 1fr); background: var(--page); color: var(--ink); font: 14px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.3rem 1.2rem; padding: 0.8rem 1rem 0.2rem; }
+header h1 { margin: 0; font-size: 1.15rem; }
+header p { margin: 0; color: var(--muted); max-width: 70ch; }
+header a { color: inherit; }
+main { display: grid; grid-template-rows: auto minmax(0, 1fr); gap: 0.6rem; padding: 0.6rem 1rem 1rem; min-height: 0; }
+nav.picker { display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; }
+nav.picker button { font: inherit; padding: 0.35rem 0.8rem; border-radius: 999px; border: 1px solid color-mix(in oklab, var(--ink) 25%, transparent); background: transparent; color: inherit; cursor: pointer; }
+nav.picker button[aria-pressed="true"] { background: var(--ink); color: var(--page); }
+strata-timeline { min-height: 560px; }
+.stats { color: var(--muted); font-size: 12px; margin-inline-start: auto; }

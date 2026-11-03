@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>10,000 events - Strata</title>
+  <link rel="stylesheet" href="../demo.css">
+  <link rel="stylesheet" href="../../src/strata.css">
+</head>
+<body>
+  <header>
+    <h1>10,000 events</h1>
+    <p>Generated in the page: 12 lanes over 30 years. Only events near the viewport exist as DOM nodes, and lanes too dense for labels switch to compact dots. <a href="../">All demos</a></p>
+  </header>
+  <main>
+    <nav class="picker" aria-label="View">
+      <button type="button" id="year" aria-pressed="false">Zoom to one year</button>
+      <button type="button" id="month" aria-pressed="false">Zoom to one month</button>
+      <span class="stats" id="stats" role="status">Generating...</span>
+    </nav>
+    <strata-timeline wheel="scroll"></strata-timeline>
+  </main>
+  <script type="module">
+    import '../../src/index.js';
+
+    const rng = (seed) => () => (seed = (seed * 1664525 + 1013904223) >>> 0) / 2 ** 32;
+    const rand = rng(42);
+    const iso = (days) => new Date(days * 864e5).toISOString().slice(0, 10);
+    const day0 = Date.UTC(1996, 0, 1) / 864e5;
+    const names = ['Inspection', 'Delivery', 'Repaint', 'Transfer', 'Audit', 'Overhaul', 'Test flight', 'Retrofit'];
+    const categories = {
+      a: { label: 'Routine', color: 'light-dark(#1f6fb2, #6aaee6)' },
+      b: { label: 'Heavy', color: 'light-dark(#c2570c, #f0954f)' },
+      c: { label: 'Transfer', color: 'light-dark(#1b7f5c, #52c79d)' },
+      d: { label: 'Other', color: 'light-dark(#6b4fbb, #a995e6)' },
+    };
+    const lanes = Array.from({ length: 12 }, (_, i) => ({ id: `l${i}`, label: `Fleet ${String.fromCharCode(65 + i)}` }));
+
+    const events = Array.from({ length: 10000 }, (_, i) => {
+      const start = day0 + rand() * 30 * 365;
+      const ev = {
+        title: `${names[Math.floor(rand() * names.length)]} ${i}`,
+        start: iso(start),
+        lane: `l${Math.floor(rand() * 12)}`,
+        category: 'abcd'[Math.floor(rand() * 4)],
+      };
+      if (rand() < 0.4) ev.end = iso(start + 1 + (rand() < 0.1 ? rand() * 300 : rand() * 25));
+      return ev;
+    });
+
+    const tl = document.querySelector('strata-timeline');
+    const stats = document.getElementById('stats');
+    const t = performance.now();
+    tl.data = { title: '10,000 generated events', lanes, categories, events };
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      stats.textContent = `${events.length} events loaded in ${Math.round(performance.now() - t)} ms, ${tl.driver.nodes.size} DOM nodes rendered`;
+    }));
+    const report = () => {
+      stats.textContent = `${tl.driver.nodes.size} of ${events.length} events rendered as DOM nodes`;
+    };
+    tl.addEventListener('strata-rangechange', report);
+    document.getElementById('year').addEventListener('click', () => tl.zoomTo({ start: '2010-01', end: '2010-12' }));
+    document.getElementById('month').addEventListener('click', () => tl.zoomTo({ start: '2010-06', end: '2010-06' }));
+    window.tl = tl;
+  </script>
+</body>
+</html>

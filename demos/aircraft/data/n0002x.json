@@ -1,0 +1,16 @@
+{
+  "aircraft": { "registration": "N0002X", "msn": "38122", "type": "777-300ER (fictional)" },
+  "history": [
+    { "type": "order", "date": "2011-06", "customer": "Example Air" },
+    { "type": "delivery", "date": "2014-03-21", "to_operator": "Example Air" },
+    { "type": "lease", "from": "2014-03-21", "to": { "earliest": "2026-01", "latest": "2026-06" }, "lessor": "Demo Aircraft Leasing", "lessee": "Example Air", "note": "End date not confirmed: lease runs out in the first half of 2026.", "confidence": "low" },
+    { "type": "registration", "from": "2014-03-21", "to": null, "registration": "N0002X", "country": "United States" },
+    { "type": "operator", "from": "2014-03-21", "to": "2026-03-01", "operator": "Example Air", "base": "JFK" },
+    { "type": "maintenance", "from": "2018-05-14", "to": "2018-06-05", "check": "C-check", "location": "SIN", "provider": "Demo MRO" },
+    { "type": "modification", "from": "2019-09-02", "to": "2019-10-18", "title": "Premium economy fit", "location": "SIN" },
+    { "type": "storage", "from": "2020-04-10", "to": "2022-02-20", "location": "Victorville" },
+    { "type": "maintenance", "from": "2021-11-01", "to": "2022-01-12", "check": "D-check", "location": "SIN", "provider": "Demo MRO", "note": "Longer than 60 days, so it is shown without a hot zone." },
+    { "type": "occurrence", "date": "2023-03-07", "summary": "Turbulence injuries", "location": "Pacific", "severity": "Serious incident" },
+    { "type": "operator", "from": "2026-03-15", "to": null, "operator": "Sample Wings Cargo", "base": "LEJ", "note": "Converted to freighter service." }
+  ]
+}
