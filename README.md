@@ -103,3 +103,7 @@ An adapter is a plain function from your API response to the native JSON. `src/a
 ## Licence
 
 MIT, see [LICENSE](LICENSE).
+
+## Data credits
+
+`demos/religions/data.json` is converted from the SIMILE Timeline religions example (SIMILE project, BSD licence); its descriptions are derived from Wikipedia text (CC BY-SA). Regenerate it with `scripts/convert-simile.mjs`.

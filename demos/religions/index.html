@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Religions - Strata</title>
+  <link rel="stylesheet" href="../demo.css">
+  <link rel="stylesheet" href="../../src/strata.css">
+</head>
+<body>
+  <header>
+    <h1>Jewish and Christian history</h1>
+    <p>The data from the SIMILE Timeline <a href="https://simile.mit.edu/timeline/examples/religions/religions.html">religions example</a> (about 730 events), converted by <code>scripts/convert-simile.mjs</code>. The two original event sources are two lanes; its hot zones (x10 from year 0, x30 from 1800) are kept. Data from the SIMILE project (BSD licence), with descriptions derived from Wikipedia. <a href="../">All demos</a></p>
+  </header>
+  <main>
+    <nav class="picker" aria-label="Jump to">
+      <button type="button" data-from="0000" data-to="0100">1st century</button>
+      <button type="button" data-from="0500" data-to="1000">500 - 1000</button>
+      <button type="button" data-from="1400" data-to="1700">1400 - 1700</button>
+      <button type="button" data-from="1900" data-to="2005">Modern</button>
+    </nav>
+    <strata-timeline src="./data.json"></strata-timeline>
+  </main>
+  <script type="module">
+    import '../../src/index.js';
+    const tl = document.querySelector('strata-timeline');
+    document.querySelector('nav.picker').addEventListener('click', (e) => {
+      const b = e.target.closest('button');
+      if (b) tl.zoomTo({ start: b.dataset.from, end: b.dataset.to });
+    });
+    tl.maxTracks = 90; // keep labels on this dense dataset; lanes grow taller and scroll
+    const ready = setInterval(() => {
+      if (!tl.model || !tl.driver.model) return;
+      clearInterval(ready);
+      tl.zoomTo({ start: '0000', end: '0500' }, { animate: false });
+    }, 60);
+    window.tl = tl;
+  </script>
+</body>
+</html>
