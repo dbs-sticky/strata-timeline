@@ -99,3 +99,7 @@ An adapter is a plain function from your API response to the native JSON. `src/a
 - Only events near the viewport exist as DOM nodes (binary-searched interval index, one viewport of buffer each side).
 - Zooming writes one CSS custom property per band. Positions are `calc(var(--s) * var(--ppd) * 1px)`.
 - Continuous pan and zoom never use view transitions. Discrete changes (data swap, filter, list view) run in an element-scoped one.
+
+## Licence
+
+MIT, see [LICENSE](LICENSE).
