@@ -11,6 +11,33 @@ test('packTracks reuses free tracks', () => {
   assert.deepEqual(packTracks([]), { track: [], count: 0 });
 });
 
+test('packTracks preserves lowest-free assignment for varied intervals', () => {
+  let seed = 17;
+  const random = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+  const spans = Array.from({ length: 4000 }, () => {
+    const x0 = Math.floor(random() * 1000);
+    return { x0, x1: x0 + Math.floor(random() * 80) };
+  }).sort((a, b) => a.x0 - b.x0);
+  const ends = [];
+  const expected = spans.map(({ x0, x1 }) => {
+    let t = 0;
+    while (t < ends.length && ends[t] > x0) t++;
+    ends[t] = x1;
+    return t;
+  });
+  assert.deepEqual(packTracks(spans), { track: expected, count: ends.length });
+});
+
+test('packTracks handles dense overlap and releases all tracks at a boundary', () => {
+  const n = 40000;
+  const spans = Array.from({ length: n }, () => ({ x0: 0, x1: 10 }));
+  spans.push({ x0: 10, x1: 20 }, { x0: 10, x1: 20 });
+  const { track, count } = packTracks(spans);
+  assert.equal(count, n);
+  assert.deepEqual(track.slice(0, n), Array.from({ length: n }, (_, i) => i));
+  assert.deepEqual(track.slice(n), [0, 1]);
+});
+
 test('IntervalIndex matches brute force', () => {
   let seed = 7;
   const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);

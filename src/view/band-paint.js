@@ -26,13 +26,6 @@ function makeEvent(band, e) {
   return btn;
 }
 
-function makeOverview(band, e) {
-  const node = el('i', 'st-ov');
-  node.dataset.kind = e.kind;
-  if (e.color) node.style.setProperty('--c', e.color);
-  return node;
-}
-
 function update(band, node, e) {
   const { warp, o } = band;
   const place = band.place.get(e.id) ?? { track: 0, lbl: 'out' };
@@ -70,9 +63,9 @@ export function paintEvents(band, found) {
   for (const e of want.values()) {
     let node = band.nodes.get(e.id);
     if (!node) {
-      node = band.painter === 'detail' ? makeEvent(band, e) : makeOverview(band, e);
+      node = makeEvent(band, e);
       band.nodes.set(e.id, node);
-      (band.painter === 'detail' ? band.laneEls[e.laneIndex] : band.body).append(node);
+      band.laneEls[e.laneIndex].append(node);
     }
     if (node._v !== band.layoutVersion) update(band, node, e);
     if (band.painter === 'detail') node.tabIndex = tl.activeId === e.id ? 0 : -1;

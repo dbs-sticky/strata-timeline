@@ -56,6 +56,7 @@
     position: absolute;
     visibility: hidden;
     pointer-events: none;
+    font: 500 12px/1 var(--st-font);
   }
 
   /* ---- bands ---- */
@@ -369,6 +370,12 @@
     .st-zone-label, .st-deco-label { display: none; }
   }
 
+  .st-overview-raster {
+    position: absolute;
+    top: 0;
+    pointer-events: none;
+  }
+
   .st-ov {
     position: absolute;
     top: calc(var(--tr, 0) * var(--row, 4px));
@@ -380,6 +387,8 @@
 
     &[data-kind="instant"] { border-radius: 50%; }
   }
+
+  .st-color-probe { visibility: hidden; pointer-events: none; }
 
   .st-shade {
     position: absolute;

@@ -19,7 +19,7 @@ const DEFAULT_BANDS = [
 ];
 
 export class StrataTimeline extends HTMLElement {
-  static observedAttributes = ['src'];
+  static observedAttributes = ['src', 'theme'];
 
   uid = `st${++counter}`;
   hintId = `${this.uid}-hint`;
@@ -40,13 +40,27 @@ export class StrataTimeline extends HTMLElement {
   #vtDepth = 0;
   #order = null;
   #probe = null;
+  #surfaceAbort = null;
+  #fontsChanged = () => {
+    this.measure.clear();
+    this.#queueResize();
+  };
+  #themeChanged = () => {
+    if (!this.driver?.model || !this.driver.viewport.clientWidth) return;
+    for (const f of this.followers) f.invalidate();
+    this.frame();
+  };
 
   get locale() {
     return this.getAttribute('locale') || 'en-GB';
   }
 
   connectedCallback() {
-    if (this.#built) return;
+    this.#surfaceAbort = new AbortController();
+    const { signal } = this.#surfaceAbort;
+    document.fonts.addEventListener('loadingdone', this.#fontsChanged, { signal });
+    matchMedia('(prefers-color-scheme: dark)').addEventListener('change', this.#themeChanged, { signal });
+    if (this.#built) { this.#queueResize(); return; }
     this.#built = true;
     this.setAttribute('role', 'region');
     if (!this.hasAttribute('aria-label')) this.setAttribute('aria-label', 'Timeline');
@@ -70,8 +84,15 @@ export class StrataTimeline extends HTMLElement {
     else if (this.#raw) this.#applyData(this.#raw);
   }
 
+  disconnectedCallback() {
+    this.#surfaceAbort.abort();
+    this.nav.cancel();
+    clearTimeout(this.#layoutTimer);
+  }
+
   attributeChangedCallback(name, old, value) {
     if (name === 'src' && this.#built && value && value !== old) this.load(value).catch((e) => console.error(e));
+    if (name === 'theme' && this.#built) this.#themeChanged();
   }
 
   // ---- data -----------------------------------------------------------------------------------
@@ -186,8 +207,8 @@ export class StrataTimeline extends HTMLElement {
     this.frame(true);
     clearTimeout(this.#layoutTimer);
     this.#layoutTimer = setTimeout(() => {
-      for (const b of this.allBands) b.layout();
-      this.frame(true);
+      for (const b of this.allBands) if (b === this.driver || b.cfg.mode !== 'static') b.layout();
+      this.frame();
     }, 140);
     this.emit('strata-zoom', { ppd: this.nav.ppd });
   }
@@ -198,7 +219,7 @@ export class StrataTimeline extends HTMLElement {
     this.driver.render(s, s + vp.clientWidth, force);
     for (const f of this.followers) {
       const [x0, x1] = this.sync.window(f, s);
-      f.render(x0, x1, force);
+      f.render(x0, x1);
     }
   }
 

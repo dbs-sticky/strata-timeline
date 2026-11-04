@@ -96,9 +96,14 @@ An adapter is a plain function from your API response to the native JSON. `src/a
 ## How it works
 
 - `src/core/*` is pure JS (no DOM): dates, hot-zone warp, tick scale, interval index, track packing, model.
-- Only events near the viewport exist as DOM nodes (binary-searched interval index, one viewport of buffer each side).
+- Detail events are virtualized in time and by visible tracks, with one viewport of horizontal buffer and a quarter viewport of vertical buffer each side. Active, focused and open-popover events stay mounted for keyboard access and anchoring.
+- Overview marks are drawn into a canvas with a viewport-sized buffer, so bitmap memory and DOM size do not grow with the time domain. Dense tracks share raster pixels; the detail band and List view retain individual event access.
+- Track packing uses heaps to keep lowest-free-track assignment deterministic in O(n log tracks) time.
 - Zooming writes one CSS custom property per band. Positions are `calc(var(--s) * var(--ppd) * 1px)`.
 - Continuous pan and zoom never use view transitions. Discrete changes (data swap, filter, list view) run in an element-scoped one.
+- Navigation promises (`scrollToDate`, `zoomTo`, `fit`) resolve when the animation completes or is interrupted. Interruption leaves the current position in place and does not jump to the cancelled destination.
+
+Browser regression checks: run the dev server and open `/browser-tests/` in Chrome or Edge. The page reports its results and exposes `window.testResults` for automation.
 
 ## Licence
 
