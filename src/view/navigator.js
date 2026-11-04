@@ -8,6 +8,7 @@ export class Navigator {
     this.min = 0.001;
     this.max = 1000;
     this.raf = 0;
+    this.finish = null;
   }
 
   get d() {
@@ -34,10 +35,12 @@ export class Navigator {
   }
 
   #set(ppd, keepTime, keepX) {
-    this.ppd = clamp(ppd, this.min, this.max);
-    this.tl.setScales(this.ppd);
+    const next = clamp(ppd, this.min, this.max);
+    const changed = next !== this.ppd;
+    this.ppd = next;
+    if (changed) this.tl.setScales(this.ppd);
     this.d.viewport.scrollLeft = this.d.x(keepTime) - keepX;
-    this.tl.scaleChanged();
+    if (changed) this.tl.scaleChanged();
   }
 
   /** Zoom by a factor keeping the date under anchorX (viewport px) fixed. */
@@ -48,7 +51,7 @@ export class Navigator {
     this.#set(this.ppd * factor, t, anchorX);
   }
 
-  /** Move to a zoom level and centre time, animated unless reduced motion is requested. */
+  /** Resolves on completion or interruption (without jumping to the cancelled target). */
   moveTo(ppd, centerTime, { animate = true } = {}) {
     this.cancel();
     ppd = clamp(ppd, this.min, this.max);
@@ -62,12 +65,17 @@ export class Navigator {
     const w1 = W.W(centerTime);
     const start = performance.now();
     return new Promise((resolve) => {
+      this.finish = resolve;
       const step = (now) => {
+        this.raf = 0;
         const k = Math.min(1, (now - start) / 320);
         const e = 1 - (1 - k) ** 3;
-        this.#set(Math.exp(Math.log(p0) + (Math.log(ppd) - Math.log(p0)) * e), W.inv(w0 + (w1 - w0) * e), this.centerX);
+        const scale = p0 === ppd || k === 1 ? ppd : Math.exp(Math.log(p0) + (Math.log(ppd) - Math.log(p0)) * e);
+        this.#set(scale, W.inv(w0 + (w1 - w0) * e), this.centerX);
+        // A zoom listener can cancel or replace this navigation synchronously.
+        if (this.finish !== resolve) return;
         if (k < 1) this.raf = requestAnimationFrame(step);
-        else resolve();
+        else { this.finish = null; resolve(); }
       };
       this.raf = requestAnimationFrame(step);
     });
@@ -88,5 +96,8 @@ export class Navigator {
   cancel() {
     if (this.raf) cancelAnimationFrame(this.raf);
     this.raf = 0;
+    const finish = this.finish;
+    this.finish = null;
+    finish?.();
   }
 }

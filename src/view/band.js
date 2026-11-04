@@ -2,6 +2,7 @@ import { IntervalIndex } from '../core/interval-index.js';
 import { div, el } from './dom.js';
 import { layoutBand } from './band-layout.js';
 import { paintAxis, paintEvents, paintStatic } from './band-paint.js';
+import { paintOverview } from './overview.js';
 
 /**
  * One horizontal band. The first band is the driver: its viewport is a real scroll container.
@@ -18,6 +19,9 @@ export class Band {
     this.place = new Map();
     this.layoutVersion = 0;
     this.rendered = [0, -1];
+    this.renderedY = [0, -1];
+    this.trackIndex = null;
+    this.scaleKey = null;
     this.ppd = 1;
     this.o = 0;
     this.pad = 0; // px reserved before the domain start (the sticky lane label column)
@@ -76,6 +80,11 @@ export class Band {
     this.spanDays = warp.W(model.domain.t1) - this.o;
     this.laneEls = [];
     this.body.replaceChildren();
+    if (this.painter === 'overview') {
+      this.raster = el('canvas', 'st-overview-raster', { 'aria-hidden': 'true' });
+      this.colorProbe = el('i', 'st-ov st-color-probe', { 'aria-hidden': 'true' });
+      this.body.append(this.raster, this.colorProbe);
+    }
     if (this.painter === 'detail') {
       for (const lane of model.lanes) {
         const laneEl = div('st-lane', { role: 'group', 'aria-label': lane.label || 'Events' });
@@ -90,11 +99,15 @@ export class Band {
       }
     }
     paintStatic(this);
+    this.scaleKey = null;
     this.invalidate();
   }
 
   setScale(ppd) {
     this.ppd = ppd;
+    const key = `${ppd}/${this.width}/${this.pad}`;
+    if (key === this.scaleKey) return;
+    this.scaleKey = key;
     this.canvas.style.width = `${this.width}px`;
     this.el.style.setProperty('--ppd', ppd);
     this.el.style.setProperty('--st-pad', `${this.pad}px`);
@@ -107,21 +120,54 @@ export class Band {
 
   layout() {
     layoutBand(this);
+    this.trackIndex = null;
     this.invalidate();
+  }
+
+  /** Capture lane geometry in one read phase, after packing has set all heights. */
+  measureTracks() {
+    const lanes = this.laneEls.map((lane) => {
+      const style = getComputedStyle(lane);
+      return {
+        top: lane.offsetTop,
+        row: parseFloat(style.getPropertyValue('--row')),
+        height: parseFloat(style.getPropertyValue('--st-tape-h')),
+        compact: lane.hasAttribute('data-compact'),
+      };
+    });
+    const items = [];
+    for (const [id, place] of this.place) {
+      const event = this.model.byId.get(id);
+      const lane = lanes[event.laneIndex];
+      const lo = lane.top + 8 + place.track * lane.row;
+      items.push({ lo, hi: lo + (lane.compact ? 8 : lane.height), event });
+    }
+    this.trackIndex = new IntervalIndex(items);
   }
 
   /** Render what is needed for the visible pixel range [vx0, vx1] of the canvas, plus a buffer either side. */
   render(vx0, vx1, force = false) {
     const V = Math.max(vx1 - vx0, 1);
     const [r0, r1] = this.rendered;
-    if (!force && vx0 - r0 >= V * 0.4 && r1 - vx1 >= V * 0.4) return false;
-    const p0 = vx0 - V;
-    const p1 = vx1 + V;
+    const horizontal = vx0 - r0 < V * 0.4 || r1 - vx1 < V * 0.4;
+    const H = this.viewport.clientHeight;
+    const y = this.viewport.scrollTop;
+    const [y0, y1] = this.renderedY;
+    const vertical = this.painter === 'detail' && (y - y0 < H * 0.1 || y1 - y - H < H * 0.1);
+    if (!force && !horizontal && !vertical) return false;
+    const p0 = horizontal ? vx0 - V : r0;
+    const p1 = horizontal ? vx1 + V : r1;
     this.rendered = [p0, p1];
     const a = this.time(p0);
     const b = this.time(p1);
-    paintEvents(this, this.index.query(a, b));
-    paintAxis(this, a, b);
+    if (this.painter === 'detail') {
+      if (!this.trackIndex) this.measureTracks();
+      this.renderedY = [y - H * 0.25, y + H * 1.25];
+      const found = this.trackIndex.query(...this.renderedY)
+        .map((item) => item.event).filter((e) => e.lo <= b && e.hi >= a);
+      paintEvents(this, found);
+    } else paintOverview(this, this.index.query(a, b), p0, p1);
+    if (horizontal) paintAxis(this, a, b);
     return true;
   }
 }

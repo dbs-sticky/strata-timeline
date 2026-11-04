@@ -14,6 +14,7 @@ export function layoutBand(band) {
   const visible = model.events.filter((e) => tl.isVisibleEvent(e));
   if (band.painter === 'overview') return layoutOverview(band, visible);
   const byLane = model.lanes.map(() => []);
+  tl.measure.refresh();
   for (const e of visible) byLane[e.laneIndex].push(e);
   byLane.forEach((items, li) => layoutLane(band, li, items));
 }
@@ -64,6 +65,5 @@ function layoutOverview(band, items) {
   });
   const { tracks, count } = pack(items, spans);
   items.forEach((e, i) => band.place.set(e.id, { track: tracks[i], lbl: 'out' }));
-  const room = Math.max(band.viewport.clientHeight - band.axisHeight() - 6, 12);
-  band.body.style.setProperty('--row', `${Math.min(7, Math.max(1.5, room / Math.max(count, 1)))}px`);
+  band.overviewTracks = Math.max(count, 1);
 }
